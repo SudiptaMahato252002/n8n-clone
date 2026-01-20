@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExceutionEventPayload 
+public class ExecutionEventPayload 
 {
     private String executionId;
     private String workflowId;

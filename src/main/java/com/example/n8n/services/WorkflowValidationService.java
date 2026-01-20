@@ -1,5 +1,6 @@
 package com.example.n8n.services;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -76,11 +77,49 @@ public class WorkflowValidationService
 
     private void validateNoCycles(Map<String,Object> nodes,Map<String,Object> connections)
     {
-        // Implement cycle detection logic here
+        if (connections == null) 
+        {
+            return; 
+        }
+        Set<String> visited=new HashSet<>();
+        Set<String> recStack=new HashSet<>();
+        for(String node:nodes.keySet())
+        {
+            if(hasCycle(node, connections, visited, recStack))
+            {
+                throw new InvalidWorkflowException("Workflow contains a cycle");
+            }
+        }
     }
 
-    private boolean hasCycle(String nodes,Map<String,Object> connections,Set<String> visited,Set<String> recStack)
+    private boolean hasCycle(String node,Map<String,Object> connections,Set<String> visited,Set<String> recStack)
     {
+
+        if(recStack.contains(node))
+        {
+            return true;
+        }
+        if(visited.contains(node))
+        {
+            return false;
+        }
+
+        visited.add(node);
+        recStack.add(node); 
+        Object targets=connections.get(node);
+        if(targets instanceof List)
+        {
+            List<String> targetNodes=(List<String>)targets;
+            for(String target:targetNodes)
+            {
+                if(hasCycle(target, connections, visited, recStack))
+                {
+                    return true;
+                }
+            }
+        }
+
+        recStack.remove(node);
         return false;
     }
     
