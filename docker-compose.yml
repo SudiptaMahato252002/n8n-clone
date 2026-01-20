@@ -10,6 +10,20 @@ services:
       POSTGRES_DB: mydb
       TZ: Asia/Kolkata
       PGTZ: Asia/Kolkata
+  
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - redis-data:/data
 
   adminer:
       image: adminer
