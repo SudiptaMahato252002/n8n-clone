@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateWorkflowRequest 
 {
-    private String userId;
     private String title;
     private TriggerType triggerType;
     private Map<String,Object> nodes;

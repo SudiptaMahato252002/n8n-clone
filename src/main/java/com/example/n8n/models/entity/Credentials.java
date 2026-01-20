@@ -38,7 +38,7 @@ public class Credentials
     private String title;
     
     @Column(columnDefinition = "TEXT", nullable = false)
-    private String credential;
+    private String credentials;
     
     @Column(nullable = false)
     private Platform platform;
