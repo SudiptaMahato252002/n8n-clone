@@ -31,15 +31,17 @@ public class ExecutionContext
         this.node.put(nodeId,result);
 
     }
-
+    
     public Map<String,Object> getTriggerPayload()
     {
-        return (Map<String,Object>)this.json.get(json);
+        return (Map<String,Object>)this.json.get("body");
     }
+    
     public Object getNodeResult(String nodeId)
     {
         return this.node.get(nodeId);
     }
+    
     public Map<String,Object> toMap()
     {
         Map<String,Object> contextMap=new HashMap<>();
