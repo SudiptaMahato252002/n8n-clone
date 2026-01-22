@@ -46,7 +46,7 @@ public class ExecutionContext
     {
         Map<String,Object> contextMap=new HashMap<>();
         contextMap.put("$json", this.json);
-        contextMap.put("$node", contextMap);
+        contextMap.put("$node", this.node);
         return contextMap;
     }
 }

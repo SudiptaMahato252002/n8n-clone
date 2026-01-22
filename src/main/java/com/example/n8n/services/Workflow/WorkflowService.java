@@ -1,4 +1,4 @@
-package com.example.n8n.services;
+package com.example.n8n.services.Workflow;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package com.example.n8n.services;
+package com.example.n8n.services.Credentials;
 
 
 
