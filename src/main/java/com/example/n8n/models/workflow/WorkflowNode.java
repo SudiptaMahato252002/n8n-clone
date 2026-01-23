@@ -21,7 +21,7 @@ public class WorkflowNode
     private String credentialsId;
     private Platform type;
     private Position Position;
-    private Map<String,Object> config;
+    private Map<String,String> config;
 
     @Data
     @Builder

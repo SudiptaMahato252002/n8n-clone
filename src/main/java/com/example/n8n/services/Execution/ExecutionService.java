@@ -13,6 +13,7 @@ import com.example.n8n.enums.ExecutionStatus;
 import com.example.n8n.models.dtos.response.ExecutionResponse;
 import com.example.n8n.models.entity.Execution;
 import com.example.n8n.repo.ExecutionRepo;
+import com.example.n8n.services.Outbox.OutboxService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 public class ExecutionService 
 {
     private final ExecutionRepo executionRepo;
-    //LATER ADD OUTBOX PATTERN FOR EXECUTION EVENTS
+    private final OutboxService outboxService;
 
     @Transactional
-    public Execution createExection(String workflowId,int totalTasks,Map<String,Object> triggerPayload)
+    public Execution createExecution(String workflowId,int totalTasks,Map<String,Object> triggerPayload)
     {
         Map<String,Object> output=new HashMap<>();
         output.put("triggerPayload", triggerPayload);
@@ -40,6 +41,7 @@ public class ExecutionService
                 .build();
 
         Execution saved=executionRepo.save(execution);
+        outboxService.saveExecutionEvent(saved.getId(),saved.getWorkflowId(),triggerPayload != null ? triggerPayload : new HashMap<>());
         log.info("Execution created with id: {}", saved.getId());
         return saved;
     }

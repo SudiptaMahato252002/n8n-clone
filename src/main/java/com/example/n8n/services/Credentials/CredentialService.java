@@ -67,10 +67,10 @@ public class CredentialService
     }
 
     @Transactional(readOnly = true)
-    public Map<String,Object> getDecryptedCredentials(String id,String userId)
+    public Map<String,Object> getDecryptedCredentials(String id)
     {
         log.debug("Getting decrypted data for credential: {}",id);
-        Credentials credential=repo.findByIdAndUserId(id, userId).orElseThrow(()->new CredentialNotFoundException("Credentials not found with id: " +id));
+        Credentials credential=repo.findById(id).orElseThrow(()->new CredentialNotFoundException("Credentials not found with id: " +id));
         return credentialEncryptionService.decryptCredentials(credential.getCredentials());
     }
     

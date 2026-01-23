@@ -2,6 +2,7 @@ package com.example.n8n.exceptions;
 
 import java.time.LocalDateTime;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -42,6 +43,18 @@ public class GlobalExceptionHandler
                 .timestamp(LocalDateTime.now())
                 .build();
         return ResponseEntity.status(404).body(response);
+    }
+
+    @ExceptionHandler(NodeExecutionException.class)
+    public ResponseEntity<ErrorResponse> handleNodeExecutionException(NodeExecutionException ex)
+    {
+        ErrorResponse response=ErrorResponse.builder()
+            .message(ex.getMessage())
+            .status(500)
+            .timestamp(LocalDateTime.now())
+        .build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        
     }
     
 }
