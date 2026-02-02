@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.n8n.enums.TriggerType;
 import com.example.n8n.exceptions.WorkflowNotFoundException;
 import com.example.n8n.models.dtos.response.ExecutionResponse;
 import com.example.n8n.models.entity.Execution;
@@ -45,14 +46,19 @@ public class WorkflowExecutionService
     }
     
     @Transactional
-    public ExecutionResponse triggerManualWorkflow(String workflowId,Map<String,Object> payload)
+    public ExecutionResponse triggerManualWorkflow(String workflowId,String userId,Map<String,Object> payload)
     {
         log.info("Triggering workflow: workflowId={}", workflowId);
-        Workflow workflow=workflowRepo.findById(workflowId).orElseThrow(()->new WorkflowNotFoundException("Workflow not found: " + workflowId));
+        Workflow workflow=workflowRepo.findByIdAndUserId(workflowId,userId).orElseThrow(()->new WorkflowNotFoundException("Workflow not found: " + workflowId));
         if(!workflow.getEnabled())
         {
             throw new IllegalStateException("Workflow " + workflow.getId() + " is disabled");   
         }
+        
+        if (workflow.getTriggerType() != TriggerType.MANUAL) {
+            throw new IllegalArgumentException("Workflow " + workflowId + " is not a manual trigger workflow");
+        }
+        
         int totalTasks=workflow.getNodes()!=null?workflow.getNodes().size():0;
         if (totalTasks == 0) 
         {

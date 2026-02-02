@@ -90,7 +90,7 @@ public class ExecutionService
     }
 
     @Transactional(readOnly = true)
-    public ExecutionResponse getExecutionResponseById(String executionId)
+    public ExecutionResponse getExecutionById(String executionId)
     {
         log.info("Fetching execution: {}", executionId);
         Execution execution=executionRepo.findById(executionId).orElseThrow(()->new RuntimeException("Execution not found with id: " + executionId));
