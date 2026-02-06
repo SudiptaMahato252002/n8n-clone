@@ -27,12 +27,13 @@ public class CredentialService
     private final CredentialsRepo repo;    
 
     @Transactional
-    public CredentialsResponse createCredentials(CreateCredentialsRequest request)
+    public CredentialsResponse createCredentials(CreateCredentialsRequest request,String userId)
     {
         String encryptedCredentials=credentialEncryptionService.encryptCredentials(request.getCredentials());
         Credentials credential=Credentials.builder()
                 .title(request.getTitle())
                 .platform(request.getPlatform())
+                .userId(userId)
                 .credentials(encryptedCredentials)
                 .build();
         Credentials saved=repo.save(credential);

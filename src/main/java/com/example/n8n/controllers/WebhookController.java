@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping
+@RequestMapping("/webhooks")
 @RequiredArgsConstructor
 @Slf4j
 public class WebhookController 
@@ -54,7 +54,7 @@ public class WebhookController
                 
             }
 
-            if(webhook.getSecret()!=null||!webhook.getSecret().isEmpty())
+            if(webhook.getSecret()!=null&&!webhook.getSecret().isEmpty())
             {
                 if(authHeader==null||!authHeader.equals(webhook.getSecret()))
                 {

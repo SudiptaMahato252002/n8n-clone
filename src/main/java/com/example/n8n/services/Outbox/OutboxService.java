@@ -59,7 +59,7 @@ public class OutboxService
     }
 
     @Transactional
-    public void incremetnRetryCount(String eventId,String errorMessage)
+    public void incrementRetryCount(String eventId,String errorMessage)
     {
         log.warn("Incrementing retry count for event: {}, error: {}", eventId, errorMessage);
         outboxRepo.findById(eventId).ifPresent(event->{

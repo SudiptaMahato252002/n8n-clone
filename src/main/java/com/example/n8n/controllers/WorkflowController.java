@@ -22,7 +22,7 @@ import com.example.n8n.services.Workflow.WorkflowService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/workflow")
+@RequestMapping("/api/workflows")
 @RequiredArgsConstructor
 public class WorkflowController 
 {

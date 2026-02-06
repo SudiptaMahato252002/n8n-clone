@@ -31,7 +31,7 @@ public class ExecutionQueueService
             Map<String,String> message=new HashMap<>();
             message.put("executionId", payload.getExecutionId());
             message.put("workflowId", payload.getWorkflowId());
-            message.put("triggerPayload", jsonUtils.ObjectToJson(message));
+            message.put("triggerPayload", jsonUtils.ObjectToJson(payload.getTriggerPayload()));
             StringRecord record=StreamRecords.string(message).withStreamKey(STREAMING_KEY);
 
             redisTemplate.opsForStream().add(record);

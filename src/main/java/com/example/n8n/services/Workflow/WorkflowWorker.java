@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class WorklfowWorker 
+public class WorkflowWorker 
 {
     private Boolean workerEnabled=true;
 

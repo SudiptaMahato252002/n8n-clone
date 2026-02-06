@@ -72,7 +72,7 @@ public class OutboxProcessor
         catch (Exception e) 
         {
             log.error("Error processing outbox events", e);
-            outboxService.incremetnRetryCount(event.getId(), e.getMessage());
+            outboxService.incrementRetryCount(event.getId(), e.getMessage());
             
             if (event.getRetryCount() + 1 >= maxRetries) {
                 log.error("Outbox event exceeded max retries and will be skipped: id={}, executionId={}", 

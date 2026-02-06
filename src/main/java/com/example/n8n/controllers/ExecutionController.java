@@ -14,7 +14,7 @@ import com.example.n8n.services.Execution.ExecutionService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/executions")
 @RequiredArgsConstructor
 public class ExecutionController 
 {
