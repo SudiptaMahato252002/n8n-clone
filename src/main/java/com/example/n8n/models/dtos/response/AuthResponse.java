@@ -18,11 +18,12 @@ public class AuthResponse
     private UserResponse user;
     private Long expiresIn;
 
-    public AuthResponse(String accessToken,String refreshToken, UserResponse user) {
+    public AuthResponse(String accessToken,String refreshToken, UserResponse user,Long expiresIn) {
         this.accessToken = accessToken;
         this.refreshToken= refreshToken;
         this.user = user;
         this.type = "Bearer";
+        this.expiresIn=expiresIn;
     }
     
 }

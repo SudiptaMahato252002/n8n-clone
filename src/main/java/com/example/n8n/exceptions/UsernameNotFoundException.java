@@ -2,7 +2,7 @@ package com.example.n8n.exceptions;
 
 public class UsernameNotFoundException extends RuntimeException
 {
-    UsernameNotFoundException(String message)
+    public UsernameNotFoundException(String message)
     {
         super(message);
     }

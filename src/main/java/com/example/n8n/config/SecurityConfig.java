@@ -34,6 +34,7 @@ public class SecurityConfig
     private final CorsConfigurationSource corsConfigurationSource;
     private final UserDetailsService userDetailsService;
 
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
         http.csrf(AbstractHttpConfigurer::disable)

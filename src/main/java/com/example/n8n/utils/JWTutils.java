@@ -8,12 +8,14 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 
+@Component
 @Slf4j
 public class JWTutils 
 {
@@ -70,7 +72,7 @@ public class JWTutils
     {
         Map<String, Object> claims = new HashMap<>(extraClaims);
         claims.put("type", "access");
-        return buildToken(extraClaims, userDetails.getUsername(), Expiration);
+        return buildToken(extraClaims, userDetails.getUsername(), accessTokenExpiration);
     }
 
     public long getExpirationTime() 

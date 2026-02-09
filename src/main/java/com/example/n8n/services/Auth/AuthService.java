@@ -53,6 +53,7 @@ public class AuthService
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
                 .enabled(true)
+                .roles(roles)
                 .build();
 
         User savedUser = userRepo.save(user);
