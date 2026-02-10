@@ -26,9 +26,9 @@ public interface OutboxRepo extends JpaRepository<OutboxEvent,String>
     
     @Modifying
     @Query("""
-            DELETE o FROM OutboxEvent o
+            DELETE FROM OutboxEvent o
             WHERE o.processed=true
-                AND O.processedAt < :beforeDate
+                AND o.processedAt < :beforeDate
             """)
     int deleteOldProcessedEvents(@Param("beforeDate")LocalDateTime beforeDate);
     
