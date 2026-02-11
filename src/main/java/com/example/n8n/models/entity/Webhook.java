@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 public class Webhook 
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    // @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(nullable = false)

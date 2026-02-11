@@ -5,6 +5,7 @@ import java.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,17 @@ import lombok.extern.slf4j.Slf4j;
 public class EncryptionUtils 
 {
     private String Algorithm="AES";
+    private String key="0123456789abcdef0123456789abcdef";
     private SecretKey secretKey;
+
+    public EncryptionUtils() 
+    {
+        byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
+        byte[] validKey = new byte[16];
+        System.arraycopy(keyBytes, 0, validKey, 0, Math.min(keyBytes.length, 16));
+        this.secretKey = new SecretKeySpec(validKey, Algorithm);
+    }
+
     public String encrypt(String data)
     {
         try 

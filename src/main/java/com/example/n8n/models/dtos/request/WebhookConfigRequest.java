@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class WebhookConfigRequest 
 {
+    private String id;
     private String title;
     private HttpMethod method;
     private String secret;

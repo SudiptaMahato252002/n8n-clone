@@ -69,4 +69,16 @@ public class GlobalExceptionHandler
         return ResponseEntity.status(404).body(response);
 
     }
+
+    @ExceptionHandler(WebhookCollisonException.class)
+    public ResponseEntity<ErrorResponse> handleWebhookCollisonException(WebhookCollisonException ex)
+    {
+        ErrorResponse response = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .status(409) // Conflict
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+
+    }
 }
