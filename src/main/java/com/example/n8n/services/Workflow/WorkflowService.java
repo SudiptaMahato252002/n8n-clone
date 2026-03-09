@@ -6,9 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.n8n.enums.TriggerType;
 import com.example.n8n.exceptions.WebhookCollisonException;
+import com.example.n8n.exceptions.WebhookNotFoundException;
 import com.example.n8n.exceptions.WorkflowNotFoundException;
 import com.example.n8n.models.dtos.request.CreateWorkflowRequest;
+import com.example.n8n.models.dtos.request.UpdateWorkflowRequest;
 import com.example.n8n.models.dtos.request.WebhookConfigRequest;
 import com.example.n8n.models.dtos.response.WebhookResponse;
 import com.example.n8n.models.dtos.response.WorkflowResponse;
@@ -34,7 +37,9 @@ public class WorkflowService
     @Transactional
     public WorkflowResponse createWorkflow(CreateWorkflowRequest request,String userId)
     {
-        workflowValidationService.validateWorkflow(request.getNodes(), request.getConnections());
+        // log.info("Starting validation");
+        // workflowValidationService.validateWorkflow(request.getNodes(), request.getConnections());
+        // log.info("Validation done");
         String webhookId=null;
         if(request.getWebhook()!=null)
         {
@@ -56,6 +61,64 @@ public class WorkflowService
         return toResponse(saved);
     }
 
+    public WorkflowResponse updateWorkflow(String id,UpdateWorkflowRequest request,String userId)
+    {
+        log.info("Updating workflow: {} for user: {}", id, userId);
+        
+        Workflow workflow = workflowRepo.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new WorkflowNotFoundException("Workflow not found with id: " + id));
+
+        TriggerType oldTrigger=workflow.getTriggerType();
+        TriggerType newTrigger=request.getTriggerType();
+        if(request.getTitle()!=null)
+        {
+            workflow.setTitle(request.getTitle());
+        }
+
+        if(request.getEnabled()!=null)
+        {
+            workflow.setEnabled(request.getEnabled());
+        }
+
+        if(request.getNodes()!=null&&request.getConnections()!=null)
+        {
+            workflowValidationService.validateWorkflow(request.getNodes(), request.getConnections());
+            workflow.setNodes(request.getNodes());
+            workflow.setConnections(request.getConnections());
+        }
+        //please hadle the webhook change later
+
+        if(request.getTriggerType()!=null)
+        {
+            if(oldTrigger == TriggerType.WEBHOOK && newTrigger == TriggerType.MANUAL)
+            {
+                deleteWebhook(workflow.getWebhookId());
+                workflow.setWebhookId(null);
+            }
+
+            else if(oldTrigger == TriggerType.MANUAL && newTrigger == TriggerType.WEBHOOK)
+            {
+                Webhook webhook = createWebhook(request.getWebhook());
+                workflow.setWebhookId(webhook.getId());
+            }
+
+            else if(oldTrigger == TriggerType.WEBHOOK && newTrigger == TriggerType.WEBHOOK)
+            {
+                updateWebhook(request.getWebhook());
+            }
+
+            workflow.setTriggerType(newTrigger);
+        }
+    
+        Workflow updated=workflowRepo.save(workflow);
+        log.info("Workflow updated: {}", id);
+        
+        return toResponse(updated);
+
+
+    
+    }
+
      @Transactional(readOnly = true)
     public WorkflowResponse getWorkflow(String id, String userId) {
         log.info("Fetching workflow: {} for user: {}", id, userId);
@@ -64,6 +127,7 @@ public class WorkflowService
                 .orElseThrow(() -> new WorkflowNotFoundException("Workflow not found with id: " + id));
         
         return toResponse(workflow);
+        
     }
     
     @Transactional(readOnly = true)
@@ -126,6 +190,25 @@ public class WorkflowService
         log.info("Webhook created with ID: {}", webhook.getId());
         return webhookRepo.save(webhook);
 
+    }
+
+    private Webhook updateWebhook(WebhookConfigRequest request)
+    {
+        Webhook webhook=webhookRepo.findById(request.getId()).orElseThrow(()->new WebhookNotFoundException("Webhook not found"));
+        
+        webhook.setTitle(request.getTitle());
+        webhook.setSecret(request.getSecret());
+        webhook.setMethod(request.getMethod());
+        return webhookRepo.save(webhook);
+    }
+
+    private void deleteWebhook(String webhookId)
+    {
+        if(webhookId!=null)
+        {
+            webhookRepo.deleteById(webhookId);
+            log.info("Deleted webhook: {}", webhookId);
+        }
     }
 
     private WorkflowResponse toResponse(Workflow workflow) {

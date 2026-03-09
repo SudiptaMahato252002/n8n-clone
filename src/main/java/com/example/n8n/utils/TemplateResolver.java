@@ -2,6 +2,7 @@ package com.example.n8n.utils;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,9 +30,10 @@ public class TemplateResolver
         try 
         {
             String mustcaheTemplate=convertToMustacheFormate(template);
+            Map<String, Object> cleanContext = convertContext(context);
             Mustache mustache=mustacheFactory.compile(new StringReader(mustcaheTemplate),"template");
             StringWriter writer=new StringWriter();
-            mustache.execute(writer, context);
+            mustache.execute(writer, cleanContext).flush();;
 
             return writer.toString();
             
@@ -61,5 +63,23 @@ public class TemplateResolver
     public boolean hasVariables(String template)
     {
         return template!=null&& template.contains("{{")&&template.contains("}}");
+    }
+    private Map<String, Object> convertContext(Map<String, Object> context) {
+
+        Map<String, Object> cleanContext = new HashMap<>();
+
+        for (Map.Entry<String, Object> entry : context.entrySet()) {
+
+            String key = entry.getKey();
+
+            // remove leading $
+            if (key.startsWith("$")) {
+                key = key.substring(1);
+            }
+
+            cleanContext.put(key, entry.getValue());
+        }
+
+        return cleanContext;
     }
 }

@@ -4,6 +4,7 @@ public enum Platform
 {
     RESEND_EMAIL,
     GEMINI,
-    TELEGRAM
+    TELEGRAM,
+    GROQ_AI
     
 }

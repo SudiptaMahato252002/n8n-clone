@@ -81,4 +81,15 @@ public class GlobalExceptionHandler
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
 
     }
+
+    @ExceptionHandler(WebhookNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleWebhookNotFoundException(WebhookNotFoundException ex)
+    {
+        ErrorResponse response=ErrorResponse.builder()
+                .message(ex.getMessage())
+                .status(404)
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(404).body(response);
+    }
 }

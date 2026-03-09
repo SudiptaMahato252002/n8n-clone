@@ -27,7 +27,7 @@ public class CredentialController
     private final CredentialService credentialService;
     
     
-    @PostMapping("/userId")
+    @PostMapping("/{userId}")
     public ResponseEntity<CredentialsResponse> createCredentials(@RequestBody CreateCredentialsRequest request,@PathVariable String userId)
     {
         CredentialsResponse response=credentialService.createCredentials(request,userId);

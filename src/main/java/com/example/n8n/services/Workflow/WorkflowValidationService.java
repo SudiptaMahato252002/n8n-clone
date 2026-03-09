@@ -64,7 +64,7 @@ public class WorkflowValidationService
                 List<String> targets=(List<String>)targetNode;
                 for(String target:targets)
                 {
-                    if(!nodes.containsKey(connections))
+                    if(!nodes.containsKey(target))
                     {
                         throw new InvalidWorkflowException("Connection references non-existent target node: " + target);
                     }
