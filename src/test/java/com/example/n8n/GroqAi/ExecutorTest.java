@@ -138,7 +138,7 @@ public class ExecutorTest
         String groqApiKey = "";
         String resendApiKey = "";
         String fromEmail = "onboarding@resend.dev";
-        String toEmail = "sudipta.mahato.ece25@heritageit.edu.in";
+        String toEmail = "sudipmaha123@gmail.com";
 
 
         // 🔹 Fake CredentialService
@@ -224,9 +224,12 @@ public class ExecutorTest
         Object emailResult = emailExecutor.execute(emailNode, context, "email-cred");
 
         assertNotNull(emailResult);
-
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(emailResult);
+        context.addNodeResult("node_2", json);
         System.out.println("======== EMAIL SENT ========");
         System.out.println(emailResult);
+        System.out.println(context.toMap());
         System.out.println("============================");
 
         System.out.println("\n✅ SUCCESS! Story generated and emailed!");

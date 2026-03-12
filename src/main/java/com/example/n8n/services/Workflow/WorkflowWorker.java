@@ -3,8 +3,10 @@ package com.example.n8n.services.Workflow;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import org.springframework.data.redis.connection.stream.Consumer;
 import org.springframework.data.redis.connection.stream.MapRecord;
@@ -194,9 +196,45 @@ public class WorkflowWorker
     }
 
     
-    private List<String> getTopologicalOrder(Map<String,WorkflowNode> nodes,Map<String,Object> connections)
+    private List<String> getTopologicalOrder(Map<String, WorkflowNode> nodes, Map<String, Object> connections) 
     {
-        return new ArrayList<>(nodes.keySet());
+        Map<String, Integer> inDegree = new HashMap<>();
+        Map<String, List<String>> graph = new HashMap<>();
+
+        for (String nodeId : nodes.keySet()) {
+            inDegree.put(nodeId, 0);
+            graph.put(nodeId, new ArrayList<>());
+        }
+
+        if (connections != null) {
+            for (Map.Entry<String, Object> entry : connections.entrySet()) {
+                String source = entry.getKey();
+                if (entry.getValue() instanceof List) {
+                    List<String> targets = (List<String>) entry.getValue();
+                    for (String target : targets) {
+                        graph.get(source).add(target);
+                        inDegree.merge(target, 1, Integer::sum);
+                    }
+                }
+            }
+        }
+
+        Queue<String> queue = new LinkedList<>();
+        for (Map.Entry<String, Integer> entry : inDegree.entrySet()) {
+            if (entry.getValue() == 0) queue.add(entry.getKey());
+        }
+
+        List<String> order = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            String node = queue.poll();
+            order.add(node);
+            for (String neighbor : graph.get(node)) {
+                inDegree.merge(neighbor, -1, Integer::sum);
+                if (inDegree.get(neighbor) == 0) queue.add(neighbor);
+            }
+        }
+
+        return order;
     }
     
     

@@ -76,7 +76,7 @@ public class EmailNodeExecutors implements NodeExecutor
             result.put("messageId", response.getId());
             result.put("status", "sent");
         
-            return response;
+            return result;
         } 
         catch(ResendException e)
         {

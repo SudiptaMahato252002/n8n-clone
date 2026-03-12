@@ -139,7 +139,7 @@ public class WorkflowService
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public void deleteWorkflow(String workflowId,String userId)
     {
         log.info("Deleting workflow: {} for user: {}", workflowId, userId);
@@ -217,7 +217,7 @@ public class WorkflowService
         WebhookResponse webhookResponse = null;
         if (workflow.getWebhookId() != null) 
         {
-            Webhook webhook=webhookRepo.findById(null).orElse(null);
+            Webhook webhook=webhookRepo.findById(workflow.getWebhookId()).orElse(null);
             if(webhook!=null)
             {
                 webhookResponse = WebhookResponse.builder()
