@@ -5,6 +5,7 @@ public enum Platform
     RESEND_EMAIL,
     GEMINI,
     TELEGRAM,
-    GROQ_AI
+    GROQ_AI,
+    WEBHOOK
     
 }

@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.example.n8n.enums.ExecutionStatus;
+import com.example.n8n.enums.Platform;
 import com.example.n8n.models.entity.Execution;
 import com.example.n8n.models.entity.Workflow;
 import com.example.n8n.models.workflow.ExecutionContext;
@@ -68,6 +69,7 @@ public class WorkflowWorker
                                         StreamReadOptions.empty().count(1).block(Duration.ofMillis(3000)),
                                         StreamOffset.create(STREAM_KEY, ReadOffset.lastConsumed()));
 
+            log.debug("[WORKER] Polled Redis stream, got {} records", records == null ? 0 : records.size());
             if(records==null||records.isEmpty())
             {
                 return;
@@ -75,6 +77,7 @@ public class WorkflowWorker
 
             for(MapRecord<String,Object,Object> record:records)
             {
+                log.info("[WORKER] Processing record id={}", record.getId());
                 processRecord(record);
             }
             
@@ -138,10 +141,15 @@ public class WorkflowWorker
             Map<String,WorkflowNode> nodes=convertToWorkflowNode(nodesMap);
 
             List<String> executionOrder=getTopologicalOrder(nodes, connectionMap);
-
+            log.info("[WORKER] Execution order: {}", executionOrder); 
             for(String nodeId:executionOrder)
             {
                 WorkflowNode workflowNode=nodes.get(nodeId);
+                if(workflowNode.getType()==Platform.WEBHOOK)
+                {
+                    log.info("Skipping trigger node: {}", nodeId);
+                    continue;
+                }
                 try 
                 {
                     log.info("Executing node: {} ({})", nodeId, workflowNode.getType());   

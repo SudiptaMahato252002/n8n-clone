@@ -25,6 +25,8 @@ public class WorkflowNode
 
     @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Position
     {
         private int x;

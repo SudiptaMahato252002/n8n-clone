@@ -34,7 +34,15 @@ public class WorkflowExecutionService
         {
             throw new IllegalStateException("Workflow " + workflow.getId() + " is disabled");
         }
-        int totalTasks=workflow.getNodes()!=null?workflow.getNodes().size():0;
+        // int totalTasks=workflow.getNodes()!=null?workflow.getNodes().size():0;
+        int totalTasks = workflow.getNodes() != null 
+            ? (int) workflow.getNodes().values().stream()
+                .filter(n -> {
+                    Map<String, Object> nodeData = (Map<String, Object>) n;
+                    return !"WEBHOOK".equals(nodeData.get("type"));
+                })
+                .count()
+            : 0;
         if (totalTasks == 0) 
         {
             throw new IllegalStateException("Workflow " + workflow.getId() + " has no nodes");
@@ -59,7 +67,15 @@ public class WorkflowExecutionService
             throw new IllegalArgumentException("Workflow " + workflowId + " is not a manual trigger workflow");
         }
         
-        int totalTasks=workflow.getNodes()!=null?workflow.getNodes().size():0;
+        // int totalTasks=workflow.getNodes()!=null?workflow.getNodes().size():0;
+        int totalTasks = workflow.getNodes() != null 
+            ? (int) workflow.getNodes().values().stream()
+                .filter(n -> {
+                    Map<String, Object> nodeData = (Map<String, Object>) n;
+                    return !"WEBHOOK".equals(nodeData.get("type"));
+                })
+                .count()
+            : 0;
         if (totalTasks == 0) 
         {
             throw new IllegalStateException("Workflow " + workflow.getId() + " has no nodes");

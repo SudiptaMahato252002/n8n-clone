@@ -34,12 +34,14 @@ public class OutboxProcessor
     {
         if (!outboxEnabled) 
         {
+            log.info("[OUTBOX] Outbox is disabled, skipping...");
             return;
         }
 
         try 
         {
             List<OutboxEvent> events=outboxRepo.findUnprocessedEventsWithRetryLimit(maxRetries);
+            log.info("[OUTBOX] Found {} unprocessed events", events.size());
             if (events.isEmpty()) {
                 return;
             }
@@ -47,6 +49,8 @@ public class OutboxProcessor
             log.info("Processing {} outbox events", events.size());
             for(OutboxEvent event:events)
             {
+                log.info("[OUTBOX] Processing event: id={}, aggregateId={}, retryCount={}", 
+                event.getId(), event.getAggregateId(), event.getRetryCount());
                 processEvents(event);
             }
                
@@ -64,6 +68,8 @@ public class OutboxProcessor
             log.debug("Processing outbox event: id={}, executionId={}", 
                 event.getId(), event.getAggregateId());
             ExecutionEventPayload payload=jsonUtils.jsonToObject(event.getPayload(), ExecutionEventPayload.class);
+            log.info("[OUTBOX] Publishing to Redis: executionId={}, workflowId={}", 
+            payload.getExecutionId(), payload.getWorkflowId());
             executionQueueService.publishToRedis(payload);
             outboxService.markAsProcessed(event.getId());
             log.info("Outbox event processed successfully: id={}, executionId={}", 

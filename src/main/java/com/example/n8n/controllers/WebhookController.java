@@ -39,7 +39,7 @@ public class WebhookController
         }
     )
     public ResponseEntity<?> handleWebhook(@PathVariable String webhookId,
-                                            @RequestHeader(required = false) String authHeader,
+                                            @RequestHeader(value="Authorization" ,required = false) String authHeader,
                                             @RequestBody(required = false) Map<String, Object> body)
     {   
         log.info("Webhook triggered: {}", webhookId);

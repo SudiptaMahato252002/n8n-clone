@@ -40,7 +40,7 @@ public class EmailNodeExecutors implements NodeExecutor
         {
             Map<String,Object> credentials=credentialService.getDecryptedCredentials(credentialsId);
             String apiKey=(String)credentials.get("apiKey");
-            String fromEmail=(String)credentials.get("fromEmail");
+            String fromEmail="onboarding@resend.dev";
 
             if (apiKey == null || fromEmail == null) 
             {
@@ -57,6 +57,8 @@ public class EmailNodeExecutors implements NodeExecutor
             String subject=templateResolver.resolve(subjectTemplate, contextMap);
             String body=templateResolver.resolve(bodyTemplate, contextMap);
             
+            log.info("[EMAIL] Sending to={}, subject={}", to, subject);
+log.info("[EMAIL] Body preview: {}", body != null ? body.substring(0, Math.min(body.length(), 100)) : "NULL");
             log.debug("Sending email to: {}, subject: {}", to, subject);
 
             Resend resend=new Resend(apiKey);

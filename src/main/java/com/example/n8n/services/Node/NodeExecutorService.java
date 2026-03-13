@@ -18,6 +18,8 @@ public class NodeExecutorService
 
     public Object excuteNode(WorkflowNode node,ExecutionContext context)
     {
+        log.info("[NODE] Executing node id={}, type={}, credentialsId={}", 
+        node.getId(), node.getType(), node.getCredentialsId());
         try 
         {
             if (node.getCredentialsId() == null || node.getCredentialsId().isEmpty()) {

@@ -18,7 +18,7 @@ public interface OutboxRepo extends JpaRepository<OutboxEvent,String>
 
     @Query("""
             SELECT o FROM OutboxEvent o
-            WHERE o.processed = true
+            WHERE o.processed = false
                 AND o.retryCount < :maxRetries
             ORDER BY o.createdAt ASC
             """)
