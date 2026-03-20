@@ -6,6 +6,7 @@ public enum Platform
     GEMINI,
     TELEGRAM,
     GROQ_AI,
-    WEBHOOK
+    WEBHOOK,
+    AI_AGENT,
     
 }

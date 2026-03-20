@@ -45,6 +45,7 @@ public class JsonUtils
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String,Object> jsonToMap(String json)
     {
         try 

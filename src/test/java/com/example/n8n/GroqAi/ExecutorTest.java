@@ -19,7 +19,6 @@ import com.example.n8n.models.workflow.WorkflowNode;
 import com.example.n8n.services.Credentials.CredentialService;
 import com.example.n8n.services.Node.Executors.EmailNodeExecutors;
 import com.example.n8n.services.Node.Executors.GroqAINodeExecutor;
-import com.example.n8n.utils.JsonUtils;
 import com.example.n8n.utils.TemplateResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
