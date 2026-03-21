@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,19 @@ public class JsonUtils
             throw new RuntimeException("Failed to convert JSON to object", e);
         }
     }
+
+    public <T> T jsonToObject(String json, TypeReference<T> typeReference)
+{
+    try
+    {
+        return objectMapper.readValue(json, typeReference);
+    }
+    catch (JsonProcessingException e)
+    {
+        log.error("Error converting JSON to object", e);
+        throw new RuntimeException("Failed to convert JSON to object", e);
+    }
+}
 
     @SuppressWarnings("unchecked")
     public Map<String,Object> jsonToMap(String json)
